@@ -45,5 +45,7 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 model.fit(x_train, y_train_cat, batch_size=30, epochs=30, validation_split=0.1)
 model.evaluate(x_test, y_test_cat)
 
+print("/")
+
 
 
