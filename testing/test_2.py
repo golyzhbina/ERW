@@ -1,4 +1,5 @@
 import numpy as np
+import tensorflow as tf
 from tensorflow import keras
 import os
 import matplotlib.pylab as plt
@@ -23,17 +24,17 @@ x_train = []
 for filename in names_of_images:
     x_train.append(plt.imread(os.path.join(dir_name, filename)))
 
-# x_train = list(map(lambda x: np.expand_dims(x_train[x], axis=0), range(len(x_train))))
 x_train = np.array(x_train) / 255
-
+x_train = tf.reshape(tf.cast(x_train, tf.float32), [-1, 32 * 32])
 names_of_images = os.listdir(r"C:\Users\Lenovo\Downloads\NN\Test")
 dir_name = r"C:\Users\Lenovo\Downloads\NN\Test"
 x_test = []
 for filename in names_of_images:
     x_test.append(plt.imread(os.path.join(dir_name, filename)))
 
-# x_test = list(map(lambda x: np.expand_dims(x_test[x], axis=0), range(len(x_test))))
+
 x_test = np.array(x_test) / 255
+
 
 model = keras.Sequential([keras.layers.Flatten(input_shape=(32, 32, 3)),
                           keras.layers.Dense(128, activation='relu'),
