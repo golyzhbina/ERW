@@ -25,3 +25,4 @@ for file_name in lst_of_names:
     image.close()
 
 sample.close()
+print("hi")
