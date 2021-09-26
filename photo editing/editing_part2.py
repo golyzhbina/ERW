@@ -25,5 +25,5 @@ for name in lst_of_names:
 
     new_name = name[0: 4] + "e" + name[4:]
     new_img.save(os.path.join(way_to_edit_images, new_name))
-    img = Image.close()
+
 
