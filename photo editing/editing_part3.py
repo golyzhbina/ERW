@@ -3,11 +3,12 @@ import numpy as np
 import os
 
 
-way_to_images = r"C:\Users\Lenovo\Desktop\UIR\Void microCT dataset_Mehdikhani et al\Voids microCT dataset\Tomographic images\Edit_part1"
+way_to_images = r"C:\Users\Lenovo\Desktop\UIR"
 lst_of_names = os.listdir(way_to_images)
 lst_of_names.sort()
+lst_of_names = [lst_of_names[1]]
 
-way_to_edit_images = r"C:\Users\Lenovo\Desktop\UIR\Void microCT dataset_Mehdikhani et al\Voids microCT dataset\Tomographic images\Edit_part2"
+way_to_edit_images = r"C:\Users\Lenovo\Desktop\UIR"
 
 for name in lst_of_names:
 
@@ -18,7 +19,7 @@ for name in lst_of_names:
 
         from_array_img = Image.fromarray(image_as_array)
 
-        new_name = name[0: 4] + "e" + name[4:]
+        new_name = "0200.tif"
         from_array_img.save(os.path.join(way_to_edit_images, new_name))
 
 
