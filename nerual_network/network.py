@@ -9,8 +9,8 @@ from os.path import join
 
 
 # preparing data
-way_to_original = r"C:\Users\Lenovo\Desktop\UIR\i"
-way_to_edited = r""
+way_to_original = r"E:\folder_J\images"
+way_to_edited = r"E:\folder_J\images_e"
 
 
 def load_images(way: str, lst_of_name: list) -> array:
@@ -24,6 +24,7 @@ def load_images(way: str, lst_of_name: list) -> array:
         images.append(image)
 
     return array(images)
+
 
 images_name = listdir(way_to_original)
 
