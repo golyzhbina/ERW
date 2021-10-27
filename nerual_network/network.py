@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D
 from tensorflow.keras.metrics import MeanIoU
@@ -5,6 +6,7 @@ from tensorflow.keras import Model
 from numpy import array
 from os import listdir
 from os.path import join
+
 
 # preparing data
 way_to_original = r"C:\Users\Lenovo\Desktop\UIR\i"
@@ -36,13 +38,18 @@ conv2 = Conv2D(32, (3, 3), padding="same", activation="relu")(pool1)            
 pool2 = MaxPooling2D(pool_size=(5, 2))(conv2)                                   # 115 * 45 * 64 * 32
 
 conv3 = Conv2D(16, (3, 3), padding="same", activation="relu")(pool2)            # 115 * 45 * 64 * 32 * 16
-pool3 = MaxPooling2D(pool_size=(5, 3))                                          # 23 * 15 * 64 * 32 * 16
+pool3 = MaxPooling2D(pool_size=(5, 3))(conv3)                                          # 23 * 15 * 64 * 32 * 16
 
-conv4 = Conv2D(1, (1, 1), padding="same", activation="sigmoid")                 # 23 * 15 * 64 * 32 * 16
+conv4 = Conv2D(1, (1, 1), padding="same", activation="sigmoid")(pool3)                # 23 * 15 * 64 * 32 * 16
 
-my_model = Model(inputs=[input_layer], outputs=[conv4])
-print(my_model.summary())
-my_model.compile(optimizer="adam", loss="binary_crossentropy", metrics=[MeanIoU(num_classes=50)])
+model = Model(inputs=[input_layer], outputs=[conv4])
+print(model.summary())
+model.compile(optimizer="adam", loss="binary_crossentropy", metrics=[MeanIoU(num_classes=50)])
+his = model.fit(x_train, y_train,batch_size=30, epochs=15, validation_split=0.1)
+plt.plot(his.history['loss'])
+plt.plot(his.history['val_loss'])
+plt.show()
+
 
 
 
