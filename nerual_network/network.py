@@ -17,7 +17,7 @@ way_to_edited_train = r"E:\folder_J\images\jpg\train\images_edited_jpg"
 def load_images(way: str, lst_of_name: list) -> array:
 
     images = []
-    for name in lst_of_name:
+    for name in lst_of_name[:10]:
         image = load_img(join(way, name),
                          color_mode="grayscale",
                          target_size=(1150, 180))
@@ -53,7 +53,7 @@ model = Model(inputs=[input_layer], outputs=[conv4])
 print(model.summary())
 
 model.compile(optimizer="adam", loss="binary_crossentropy", metrics=[MeanIoU(num_classes=50)])
-his = model.fit(x_train, y_train,batch_size=30, epochs=5, validation_split=0.1)
+his = model.fit(x_train, y_train,batch_size=10, epochs=5, validation_split=0.1)
 
 plt.plot(his.history['loss'])
 plt.show()
