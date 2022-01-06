@@ -1,6 +1,5 @@
 import vk_api
 import requests
-import json
 from keras.models import load_model
 from keras_preprocessing.image import load_img
 from numpy import asarray, expand_dims, array, reshape
