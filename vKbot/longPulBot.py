@@ -1,5 +1,6 @@
 import vk_api
 import requests
+import json
 from keras.models import load_model
 from keras_preprocessing.image import load_img
 from numpy import asarray, expand_dims, array, reshape
@@ -42,9 +43,9 @@ class MyBot:
                                                 'Готовы продолжить? Если да - напишите "Поехали!", если нет - напишите '
                                                 '"Всего доброго!"')
 
-                elif event.message['attachments'][0]['type'] == 'photo':
+                elif event.message['attachments'][0]['type'] == 'doc':
                     self.write_msg("230874519", "Понял, принял, ща все будет")
-                    self.load_image(event.message['attachments'][0]['photo']['sizes'][-1]['url'])
+                    self.load_image(event.message['attachments'][0]['doc']['url'])
 
                 else:
                     if self.flag_greet:
@@ -103,12 +104,16 @@ class MyBot:
         self.send_img()
 
     def send_img(self):
-        upload = vk_api.VkUpload(self.vk)
-        photo = upload.photo_messages('img_ans.jpg')
-        owner_id = photo[0]['owner_id']
-        photo_id = photo[0]['id']
-        access_key = photo[0]['access_key']
-        attachment = f'photo{owner_id}_{photo_id}_{access_key}'
-        self.vk.method("messages.send", {"user_id": "230874519", "random_id": randint(1, 1000), "attachment": attachment})
+        u = vk_api.VkUpload(self.vk)
+        doc = u.document_message("img_ans.jpg")
+        result = json.loads(requests.post(self.vk.get_api().getMessagesUploadServer(type='doc', peer_id=doc['peer_id'])['upload_url'], files={'file': open('file.txt', 'rb')}).text)
+        jsonAnswer = self.vk.get_api().save(file=result['file'], title='title', tags=[])
+
+        title = doc['title']
+        tags = doc['tags']
+        peer_id = doc['peer_id']
+        attachment = f'doc{title}_{tags}_{peer_id}'
+        self.vk.method('messages.send', {"user_id": "230874519", "random_id": randint(1, 1000), "attachment": attachment})
+
 
 my_bot = MyBot()
