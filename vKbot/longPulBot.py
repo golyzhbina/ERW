@@ -5,7 +5,7 @@ from keras_preprocessing.image import load_img
 from numpy import asarray, expand_dims, array, reshape
 from PIL import Image
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
-from info import token_group
+from info import token_group, group_id
 from random import randint
 
 
@@ -14,7 +14,7 @@ class MyBot:
     def __init__(self):
 
         self.vk = vk_api.VkApi(token=token_group)
-        self.longpoll = VkBotLongPoll(self.vk, group_id="209793179")
+        self.longpoll = VkBotLongPoll(self.vk, group_id=group_id)
         self.flag_greet = False
         self.flag_new_mess = True
         self.image = None
