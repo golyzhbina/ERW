@@ -1,2 +1,2 @@
-token_group = "1c69152c88d9ce47714ec1839dda7c78b28a36386501df32b03c557f9bee7e6be89c3c1ddf9af34856bd0"
-group_id = "178256613"
+token_group =
+group_id =
