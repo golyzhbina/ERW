@@ -22,45 +22,45 @@ class MyBot:
         self.longpoll_cycle()
 
     def longpoll_cycle(self):
-
         for event in self.longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_NEW:
-
+                sender = event.message["from_id"]
                 if event.message['text'].lower() == 'всего доброго!':
-                    self.write_msg("230874519", 'До свидания! Умнейте и приходите.'
-                                                ' Если вы хотите вернуться назад - пишите "Возвращаемся!"')
+                    self.write_msg(sender, 'До свидания! Умнейте и приходите.'
+                                           ' Если вы хотите вернуться назад - пишите "Возвращаемся!"')
                 elif event.message['text'].lower() == 'поехали!':
-                    self.write_msg("230874519", 'Отлично! Присылайте томографию своего композита, посмотрим. '
-                                                'Если вы хотите вернуться назад - пишите "Возвращаемся!"')
+                    self.write_msg(sender, 'Отлично! Присылайте томографию своего композита, посмотрим. '
+                                           'Если вы хотите вернуться назад - пишите "Возвращаемся!"')
                 elif event.message['text'].lower() == 'возвращаемся!':
-                    self.write_msg("230874519", 'Добрейший денёчек! '
-                                                'Этот бот является посредником между пользователем и написанной '
-                                                'нейросетью, которая предназначена для определения структурных '
-                                                'деффектов в композиционных меатриалах. Если вы не поняли и '
-                                                'половины слов в предыдущем предложении, то предлагаю мирно пройти '
-                                                'мимо, и все будут счастливы!'
-                                                'Готовы продолжить? Если да - напишите "Поехали!", если нет - напишите '
-                                                '"Всего доброго!"')
+                    self.write_msg(sender, 'Добрейший денёчек! '
+                                           'Этот бот является посредником между пользователем и написанной '
+                                           'нейросетью, которая предназначена для определения структурных '
+                                           'деффектов в композиционных меатриалах. Если вы не поняли и '
+                                           'половины слов в предыдущем предложении, то предлагаю мирно пройти '
+                                           'мимо, и все будут счастливы!'
+                                           'Готовы продолжить? Если да - напишите "Поехали!", если нет - напишите '
+                                           '"Всего доброго!"')
 
-                elif event.message['attachments'][0]['type'] == 'photo':
-                    self.write_msg("230874519", "Понял, принял, ща все будет")
-                    self.load_image(event.message['attachments'][0]['photo']['sizes'][-1]['url'])
+                elif event.message['attachments']:
+                    if event.message['attachments'][0]['type'] == 'photo':
+                        self.write_msg(sender, "Понял, принял, ща все будет")
+                        self.load_image(event.message['attachments'][0]['photo']['sizes'][-1]['url'], sender)
 
                 else:
                     if self.flag_greet:
-                        self.write_msg("230874519", 'Что-что? Не понимаю вас... Давай е расскажу о доступных командах!'
-                                                    '\n"Поехали!" - начать работу, вам предложат отправить свое фото.'
-                                                    '\n"Всего доброго!" - попрощаться с ботом и продолжить диалог.'
-                                                    '\n"Возращаемся!" - получить приветственное сообщение.')
+                        self.write_msg(sender, 'Что-что? Не понимаю вас... Давай е расскажу о доступных командах!'
+                                               '\n"Поехали!" - начать работу, вам предложат отправить свое фото.'
+                                               '\n"Всего доброго!" - попрощаться с ботом и продолжить диалог.'
+                                               '\n"Возращаемся!" - получить приветственное сообщение.')
                 if not self.flag_greet:
-                    self.write_msg("230874519", 'Добрейший денёчек! '
-                                                'Этот бот является посредником между пользователем и написанной '
-                                                'нейросетью, которая предназначена для определения структурных '
-                                                'деффектов в композиционных материалах. Если вы не поняли и '
-                                                'половины слов в предыдущем предложении, то предлагаю мирно пройти '
-                                                'мимо, и все будут счастливы!'
-                                                'Готовы продолжить? Если да - напишите "Поехали!", если нет - напишите '
-                                                '"Всего доброго!"')
+                    self.write_msg(sender, 'Добрейший денёчек! '
+                                           'Этот бот является посредником между пользователем и написанной '
+                                           'нейросетью, которая предназначена для определения структурных '
+                                           'деффектов в композиционных материалах. Если вы не поняли и '
+                                           'половины слов в предыдущем предложении, то предлагаю мирно пройти '
+                                           'мимо, и все будут счастливы!'
+                                           'Готовы продолжить? Если да - напишите "Поехали!", если нет - напишите '
+                                           '"Всего доброго!"')
 
                     self.flag_greet = True
                 print(event.message)
@@ -68,31 +68,29 @@ class MyBot:
     def write_msg(self, user_id, message):
         self.vk.method("messages.send", {"user_id": user_id, "message": message, "random_id": randint(1, 1000)})
 
-    def serch_defect(self, img):
+    def serch_defect(self, img, sender):
 
         model = load_model(r"..\nerual_network\model_u.h5")
         answer = model.predict(img)
-        self.arr_to_img(answer)
+        self.arr_to_img(answer, sender)
 
-    def load_image(self, address):
-
+    def load_image(self, address, sender):
         img = requests.get(address)
         out = open("img.jpg", "wb")
         out.write(img.content)
         out.close()
-        self.img_to_arr()
+        self.img_to_arr(sender)
 
-    def img_to_arr(self):
+    def img_to_arr(self, sender):
         self.image = load_img("img.jpg",
                               color_mode="grayscale",
                               target_size=(1150, 180))
         img_arr = asarray(self.image)
         img_arr = img_arr / 255
         img_arr = expand_dims(img_arr, axis=0)
-        self.serch_defect(img_arr)
+        self.serch_defect(img_arr, sender)
 
-    def arr_to_img(self, arr):
-
+    def arr_to_img(self, arr, sender):
         arr = array(arr)
         arr = reshape(arr, (1150, 180))
         for i in range(len(arr)):
@@ -100,15 +98,16 @@ class MyBot:
         img_ans = Image.fromarray(arr)
         img_ans = img_ans.convert("L")
         img_ans.save("img_ans.jpg")
-        self.send_img()
+        self.send_img(sender)
 
-    def send_img(self):
+    def send_img(self, sender):
         upload = vk_api.VkUpload(self.vk)
         photo = upload.photo_messages('img_ans.jpg')
         owner_id = photo[0]['owner_id']
         photo_id = photo[0]['id']
         access_key = photo[0]['access_key']
         attachment = f'photo{owner_id}_{photo_id}_{access_key}'
-        self.vk.method("messages.send", {"user_id": "230874519", "random_id": randint(1, 1000), "attachment": attachment})
+        self.vk.method("messages.send", {"user_id": sender, "random_id": randint(1, 1000), "attachment": attachment})
+
 
 my_bot = MyBot()
