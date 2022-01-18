@@ -4,7 +4,7 @@ import numpy as np
 
 
 def draw_img(img):
-
+    print(*img[250])
     img_new = []
     for i in range(1150):
         img_new.append(list(map(list, img[i])))
@@ -36,7 +36,6 @@ def draw_img(img):
     new_layer = array(list(map(array, new_layer)))
 
     return new_layer
-
 
 test = Image.open(r"C:\Users\Lenovo\Desktop\UIR\images\images_for_bot\edited\2.jpg")
 test = test.convert("RGBA")
